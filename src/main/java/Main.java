@@ -16,8 +16,15 @@ public class Main extends JPanel{
         area.sortAndMergeABCArrays((ArrayList<Point>) arrays[0], (ArrayList<Point>) arrays[1], (ArrayList<Point>) arrays[2]);
         area.closeLineToPolygon();
         Polygon newArea = area.buildPolygon();
-
+        Probe probe = new Probe(150, 140, 20, 0);
+        Probe probe_1 = new Probe(250, 140, 20, 2);
+        Polygon probe1 = probe.createTriangle();
+        Polygon probe2 = probe_1.createTriangle();
         g.drawPolygon(newArea);
+        g.drawPolygon(probe1);
+        g.drawPolygon(probe2);
+        System.out.println(area.polygonArea());
+        System.out.println(probe.calculateArea());
     }
 
 
@@ -28,5 +35,6 @@ public class Main extends JPanel{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
         frame.setVisible(true);
+
     }
 }

@@ -1,9 +1,4 @@
-import com.github.sh0nk.matplotlib4j.Plot;
-import com.github.sh0nk.matplotlib4j.PythonExecutionException;
-
 import java.awt.*;
-import java.awt.image.AreaAveragingScaleFilter;
-import java.io.IOException;
 import java.util.*;
 
 public class Area {
@@ -190,5 +185,21 @@ public class Area {
             area.addPoint(point.getX(), point.getY());
         }
         return area;
+    }
+
+    double polygonArea() {
+        double area = 0.0;
+        ArrayList<Integer> X = new ArrayList<>();
+        ArrayList<Integer> Y = new ArrayList<>();
+        for (Point point: this.array) {
+            X.add(point.getX());
+            Y.add(point.getY());
+        }
+        int j = this.numberOfVerts - 1;
+        for (int i = 0; i < this.numberOfVerts; i++) {
+            area += (X.get(j) + X.get(i) * (Y.get(j) - Y.get(i)));
+            j = i;
+        }
+        return Math.abs(area / 2.0);
     }
 }
