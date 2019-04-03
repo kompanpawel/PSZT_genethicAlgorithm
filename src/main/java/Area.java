@@ -1,7 +1,10 @@
-import java.awt.*;
+import math.geom2d.Point2D;
+import math.geom2d.polygon.Polygon2D;
+import math.geom2d.polygon.SimplePolygon2D;
+
 import java.util.*;
 
-public class Area {
+class Area {
     private ArrayList<Point> array = new ArrayList<>();
     private int minRandCoord, maxRandCoord, numberOfVerts;
     private Random random = new Random();
@@ -13,8 +16,8 @@ public class Area {
         this.numberOfVerts = numberOfVerts;
     }
 
-    static void getCofactor(int mat[][],
-                            int temp[][], int p, int q, int n) {
+    private static void getCofactor(int[][] mat,
+                                    int[][] temp, int p, int q, int n) {
         int i = 0, j = 0;
 
         // Looping for each element of
@@ -145,12 +148,6 @@ public class Area {
     }
 
     Object[] sortArrayIntoABC(Point[] linePoints) {
-        int x_lm = linePoints[0].getX();
-        int y_lm = linePoints[0].getY();
-
-        int x_rm = linePoints[1].getX();
-        int y_rm = linePoints[1].getY();
-
         ArrayList<Point> A = new ArrayList<>();
         ArrayList<Point> B = new ArrayList<>();
         ArrayList<Point> C = new ArrayList<>();
@@ -178,28 +175,12 @@ public class Area {
         this.array = merged;
     }
 
-    Polygon buildPolygon() {
-        Polygon area = new Polygon();
+    Polygon2D buildPolygon() {
+        Polygon2D area = new SimplePolygon2D();
         for (Point point :
                 this.array) {
-            area.addPoint(point.getX(), point.getY());
+            area.addVertex(new Point2D(point.getX(), point.getY()));
         }
         return area;
-    }
-
-    double polygonArea() {
-        double area = 0.0;
-        ArrayList<Integer> X = new ArrayList<>();
-        ArrayList<Integer> Y = new ArrayList<>();
-        for (Point point: this.array) {
-            X.add(point.getX());
-            Y.add(point.getY());
-        }
-        int j = this.numberOfVerts - 1;
-        for (int i = 0; i < this.numberOfVerts; i++) {
-            area += (X.get(j) + X.get(i) * (Y.get(j) - Y.get(i)));
-            j = i;
-        }
-        return Math.abs(area / 2.0);
     }
 }

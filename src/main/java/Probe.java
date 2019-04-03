@@ -1,4 +1,10 @@
+import math.geom2d.Point2D;
+import math.geom2d.polygon.Polygon2D;
+import math.geom2d.polygon.Polygons2D;
+import math.geom2d.polygon.SimplePolygon2D;
+
 import java.awt.*;
+
 
 public class Probe {
     private int x, y, d;
@@ -12,25 +18,25 @@ public class Probe {
         this.direction = dir;
     }
 
-    Polygon createTriangle() {
-        Polygon triangle = new Polygon();
-        triangle.addPoint(this.x, this.y);
+    Polygon2D createTriangle() {
+        Polygon2D triangle = new SimplePolygon2D();
+        triangle.addVertex(new Point2D(this.x, this.y));
         switch(this.direction) {
             case 0:
-                triangle.addPoint(this.x, this.y - this.d);
-                triangle.addPoint(this.x + this.d, this.y);
+                triangle.addVertex(new Point2D(this.x, this.y - this.d));
+                triangle.addVertex(new Point2D(this.x + this.d, this.y));
                 break;
             case 1:
-                triangle.addPoint(this.x + this.d, this.y);
-                triangle.addPoint(this.x, this.y + this.d);
+                triangle.addVertex(new Point2D(this.x + this.d, this.y));
+                triangle.addVertex(new Point2D(this.x, this.y + this.d));
                 break;
             case 2:
-                triangle.addPoint(this.x, this.y + this.d);
-                triangle.addPoint(this.x - this.d, this.y);
+                triangle.addVertex(new Point2D(this.x, this.y + this.d));
+                triangle.addVertex(new Point2D(this.x - this.d, this.y));
                 break;
             case 3:
-                triangle.addPoint(this.x - this.d, this.y);
-                triangle.addPoint(this.x, this.y - this.d);
+                triangle.addVertex(new Point2D(this.x - this.d, this.y));
+                triangle.addVertex(new Point2D(this.x, this.y - this.d));
                 break;
         }
         return triangle;
