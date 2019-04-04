@@ -7,11 +7,12 @@ import java.awt.*;
 
 
 public class Probe {
-    private int x, y, d;
+    private double x, y;
+    private int d;
     private int direction; // 0-up, 1-right, 2-down, 3-left
 
 
-    Probe(int x, int y, int d, int dir) {
+    Probe(double x, double y, int d, int dir) {
         this.x = x;
         this.y = y;
         this.d = d;
