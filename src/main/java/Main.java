@@ -2,9 +2,10 @@ import math.geom2d.Point2D;
 import math.geom2d.polygon.Polygon2D;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.KeyListener;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
+import java.util.Timer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,17 +45,19 @@ public class Main extends JPanel{
                 .collect(Collectors.toList());
     }
 
-   /*private List<Polygon2D> executeAlgorithm() {
-        Algorithm algorithm = new Algorithm(newArea, probes);
-        while(!algorithm.foundSolution) {
+   void executeAlgorithm() {
+        Algorithm algorithm = new Algorithm(this.newArea, this.probes);
+        algorithm.findSolution();
+        System.out.println(algorithm.getAdjMatrix());
+       /* while(!algorithm.isSolutionFound()) {
             algorithm.findSolution();
-            if (!algorithm.foundSolution()) {
-                probes = generateProbes((int) n + 1);
+            if (!algorithm.isSolutionFound()) {
+                this.probes = generateProbes((int) n + 1);
                 algorithm = new Algorithm(newArea, probes);
             }
         }
-        return probes;
-    }*/
+        return probes;*/
+    }
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -66,12 +69,12 @@ public class Main extends JPanel{
 
 
     public static void main(String[] args) {
+        Main main = new Main();
         JFrame frame = new JFrame();
-        frame.getContentPane().add(new Main());
-
+        frame.getContentPane().add(main);
+        main.executeAlgorithm();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
         frame.setVisible(true);
-
     }
 }
