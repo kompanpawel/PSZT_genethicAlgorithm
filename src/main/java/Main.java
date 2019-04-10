@@ -18,7 +18,7 @@ public class Main extends JPanel{
     private int probeSize = 20;
     private double areaOfPolygon = newArea.area();
     private long n = Math.round(areaOfPolygon / ((probeSize*probeSize)/2));
-    private List<Polygon2D> probes = generateProbes((int) n);
+    private List<Probe> probes = generateProbes((int) n);
 
     private Polygon2D buildArea() {
         area.generateRandomPoints();
@@ -41,7 +41,6 @@ public class Main extends JPanel{
                 .filter(newArea::contains)
                 .limit(n)
                 .map(point -> new Probe(point.x(), point.y(), probeSize, random.nextInt(4)))
-                .map(Probe::createTriangle)
                 .collect(Collectors.toList());
     }
 
@@ -62,8 +61,8 @@ public class Main extends JPanel{
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         newArea.draw(g2d);
-        for (Polygon2D probe: probes) {
-            probe.draw(g2d);
+        for (Probe probe: probes) {
+            probe.getPolygon().draw(g2d);
         }
     }
 

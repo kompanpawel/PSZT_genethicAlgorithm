@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class Algorithm {
 
     private Polygon2D area;
-    private List<Polygon2D> probes;
+    private List<Probe> probes;
 
     private boolean solutionFound = false;
 
@@ -21,7 +21,7 @@ public class Algorithm {
     private Random random = new Random();
     private Map<Integer, Double> fitnessScores = new HashMap<>();
 
-    Algorithm(Polygon2D area, List<Polygon2D> probes) {
+    Algorithm(Polygon2D area, List<Probe> probes) {
         this.area = area;
         this.probes = probes;
         this.adjMatrix = new boolean[probes.size()][probes.size()];
@@ -44,7 +44,7 @@ public class Algorithm {
     void generateAdjacencyMatrix () {
         IntStream.range(0, this.probes.size())
                 .forEach(index -> {
-                    Polygon2D probe = this.probes.get(index);
+                    Polygon2D probe = this.probes.get(index).getPolygon();
                     Circle2D circle = new Circle2D(probe.centroid().x(), probe.centroid().y(), 30);
                     IntStream.range(index + 1, this.probes.size())
                             .forEach(internalIndex -> {
@@ -52,7 +52,7 @@ public class Algorithm {
                                     return;
                                 }
 
-                                if(circle.isInside(this.probes.get(internalIndex).centroid())) {
+                                if(circle.isInside(this.probes.get(internalIndex).getPolygon().centroid())) {
                                     addEdge(index, internalIndex);
                                 }
                             });
@@ -60,8 +60,8 @@ public class Algorithm {
     }
 
     public void calculateFitness() {
-        for (Polygon2D probe: this.probes) {
-            List<Polygon2D> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
+        for (Probe probe: this.probes) {
+            List<Probe> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
             double score = fitnessScore(probe, neighbours);
             fitnessScores.put(this.probes.indexOf(probe), score);
         }
@@ -70,10 +70,9 @@ public class Algorithm {
     public void findSolution () {
         generateAdjacencyMatrix();
         calculateFitness();
-        List<Polygon2D> newProbes;
         while(true) {
-            for (Polygon2D probe: this.probes) {
-                List<Polygon2D> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
+            for (Probe probe: this.probes) {
+                List<Probe> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
             }
         }
     }
@@ -91,20 +90,19 @@ public class Algorithm {
         return bestIndex;
     }
 
-    List getListNeighboutProbes(int probeIndex) {
-        return Stream.iterate(0, i->i+1)
-                .limit(this.probes.size())
-                .map(index -> this.probes.get(index))
+    List<Probe> getListNeighboutProbes(int probeIndex) {
+        return this.probes
+                .stream()
                 .filter(probe-> isEdge(probeIndex, this.probes.indexOf(probe)) && this.probes.indexOf(probe) != probeIndex)
                 .collect(Collectors.toList());
     }
 
-    Vector2D intersectParents(Polygon2D probe, Polygon2D neighbour) {
-        Integer px = (int) probe.vertex(0).x();
-        Integer py = (int) probe.vertex(0).y();
+    Vector2D crossoverParents(Probe probe, Probe neighbour) {
+        Integer px = (int) probe.getX();
+        Integer py = (int) probe.getY();
 
-        Integer nx = (int) neighbour.vertex(0).x();
-        Integer ny = (int) neighbour.vertex(0).y();
+        Integer nx = (int) neighbour.getX();
+        Integer ny = (int) neighbour.getY();
 
         int[] PX = parseStringToInt(Strings.padStart(Integer.toBinaryString(px), 10, '0').split(""));
         int[] PY = parseStringToInt(Strings.padStart(Integer.toBinaryString(py), 10, '0').split(""));
@@ -121,10 +119,10 @@ public class Algorithm {
         return new Vector2D(cx, cy);
     }
 
-    double fitnessScore(Polygon2D probe, List<Polygon2D> neighbours) {
-        Polygon2D union = Polygons2D.intersection(this.area, probe);
+    double fitnessScore(Probe probe, List<Probe> neighbours) {
+        Polygon2D union = Polygons2D.intersection(this.area, probe.getPolygon());
         for(int i = 1; i < neighbours.size(); i++) {
-            union = Polygons2D.difference(union, neighbours.get(i));
+            union = Polygons2D.difference(union, neighbours.get(i).getPolygon());
         }
         return union.area();
     }
