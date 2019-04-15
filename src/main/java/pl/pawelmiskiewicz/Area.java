@@ -1,3 +1,5 @@
+package pl.pawelmiskiewicz;
+
 import math.geom2d.Point2D;
 import math.geom2d.polygon.Polygon2D;
 import math.geom2d.polygon.SimplePolygon2D;
@@ -8,7 +10,7 @@ class Area {
     private ArrayList<Point> array = new ArrayList<>();
     private int minRandCoord, maxRandCoord, numberOfVerts;
     private Random random = new Random();
-    static final int N = 4;
+    private static final int N = 4;
 
     Area (int minRandCoord, int maxRandCoord, int numberOfVerts) {
         this.minRandCoord = minRandCoord;
@@ -43,7 +45,7 @@ class Area {
         }
     }
 
-    static int determinantOfMatrix(int mat[][], int n) {
+    private static int determinantOfMatrix(int[][] mat, int n) {
         int D = 0; // Initialize result
 
         // Base case : if matrix contains single
@@ -52,7 +54,7 @@ class Area {
             return mat[0][0];
 
         // To store cofactors
-        int temp[][] = new int[N][N];
+        int[][] temp = new int[N][N];
 
         // To store sign multiplier
         int sign = 1;
@@ -74,7 +76,7 @@ class Area {
     }
 
     ArrayList<Point> generateRandomPoints() {
-        ArrayList<Point> randomCoordsList = new ArrayList<Point>();
+        ArrayList<Point> randomCoordsList = new ArrayList<>();
         for (int i = 0; i < this.numberOfVerts; i++) {
             Point point = new Point(random.nextInt(this.maxRandCoord - this.minRandCoord), random.nextInt(this.maxRandCoord - this.minRandCoord));
             randomCoordsList.add(point);
@@ -117,7 +119,7 @@ class Area {
         }
         return rightmostPoint;
     }
-    int isPointAboveTheLine(Point point, Point[] linePoints) {
+    private int isPointAboveTheLine(Point point, Point[] linePoints) {
         int px = point.getX();
         int py = point.getY();
 
@@ -164,7 +166,7 @@ class Area {
     }
 
     void sortAndMergeABCArrays(ArrayList<Point> A, ArrayList<Point> B, ArrayList<Point> C) {
-        ArrayList<Point> A_C_array = new ArrayList<Point>();
+        ArrayList<Point> A_C_array = new ArrayList<>();
         A_C_array.addAll(A);
         A_C_array.addAll(C);
         A_C_array.sort(Comparator.comparing(Point::getX));

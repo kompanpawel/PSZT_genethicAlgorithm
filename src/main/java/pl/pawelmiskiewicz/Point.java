@@ -1,3 +1,5 @@
+package pl.pawelmiskiewicz;
+
 public class Point {
     private int x, y;
 
@@ -8,15 +10,15 @@ public class Point {
         this.y = y;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public void setX(int x) {
+    void setX(int x) {
         this.x = x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
