@@ -18,10 +18,8 @@ public class Algorithm extends JPanel{
 
     private Polygon2D area;
     private List<Probe> probes;
-    private List<List<Probe>> history;
     private List<Probe> nextProbes = new LinkedList<>();
-    private List<Probe> bestProbes;
-    private List<Integer> toDelete = new LinkedList<>();
+    private int minProbes;
 
     private boolean solutionFound = false;
 
@@ -29,20 +27,22 @@ public class Algorithm extends JPanel{
     private Random random = new Random();
     private Map<Integer, Double> fitnessScores = new HashMap<>();
 
+    private double minX, minY, maxX, maxY;
+
     Algorithm(Polygon2D area, List<Probe> probes) {
         this.area = area;
         this.probes = probes;
         this.adjMatrix = new boolean[probes.size()][probes.size()];
+        minProbes = (int) Math.round((0.9 * this.area.area()) / this.probes.get(0).getPolygon().area());
+        this.minX = this.area.vertices().stream().mapToDouble(Point2D::x).min().getAsDouble();
+        this.minY = this.area.vertices().stream().mapToDouble(Point2D::y).min().getAsDouble();
+        this.maxX = this.area.vertices().stream().mapToDouble(Point2D::x).max().getAsDouble();
+        this.maxY = this.area.vertices().stream().mapToDouble(Point2D::y).max().getAsDouble();
     }
 
     public void addEdge(int i, int j) {
         this.adjMatrix[i][j] = true;
         this.adjMatrix[j][i] = true;
-    }
-
-    public void removeEdge(int i, int j) {
-        adjMatrix[i][j] = false;
-        adjMatrix[j][i] = false;
     }
 
     public boolean isEdge(int i, int j) {
@@ -91,10 +91,10 @@ public class Algorithm extends JPanel{
         double bestFitnessScore = this.fitnessScores.entrySet().stream().mapToDouble(Map.Entry::getValue).sum();
         int bestIteration = 0;
         int reduceIteration = 0;
-        for(int i = 0; i < 1000; i++) {
+        for(int i = 0; i < 10000; i++) {
             for (Probe probe: this.probes) {
                 List<Probe> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
-                int number = 0;
+                int number;
                 Probe bestNeighbour;
                     number = random.nextInt(this.probes.size());
                     bestNeighbour = this.probes.get(number);
@@ -104,7 +104,7 @@ public class Algorithm extends JPanel{
             }
             calculateFitness(this.nextProbes);
             double totalFitnessScore = this.fitnessScores.entrySet().stream().mapToDouble(Map.Entry::getValue).sum();
-            if(totalFitnessScore > bestFitnessScore) {
+            //if(totalFitnessScore > bestFitnessScore) {
                 bestFitnessScore = totalFitnessScore;
                 bestIteration = i;
                 this.probes = this.nextProbes;
@@ -112,15 +112,14 @@ public class Algorithm extends JPanel{
                 this.adjMatrix = new boolean[this.probes.size()][this.probes.size()];
                 generateAdjacencyMatrix();
                 System.out.println("zmiana");
-            }
+            //}
             if(bestFitnessScore >= 0.9 * maxFitnessScore) {
                 System.out.println("pokrywa");
             }
             if(i - bestIteration > 30 && i - reduceIteration > 40) {
-                //reducePopulation();
+                reducePopulation();
                 reduceIteration = i;
             }
-            this.toDelete = new LinkedList<>();
             this.nextProbes = new LinkedList<>();
             repaint();
 
@@ -129,7 +128,10 @@ public class Algorithm extends JPanel{
     }
 
     private void reducePopulation() {
-        int toDie = 2;
+        if(this.probes.size() <= minProbes) {
+            return;
+        }
+        int toDie = 3;
         List<Integer> forDie = new LinkedList<>();
         for(Probe probe: this.probes) {
             if(!area.contains(new Point2D(probe.getX(), probe.getY()))) {
@@ -188,6 +190,18 @@ public class Algorithm extends JPanel{
         int cx = Integer.parseInt(parseIntToString(CX), 2);
         int cy = Integer.parseInt(parseIntToString(CY), 2);
         int cDir = Integer.parseInt(parseIntToString(CDIR), 2);
+
+        if(cx < minX) {
+            cx = (int) minX;
+        } else if(cx > maxX) {
+            cx = (int) maxX;
+        }
+
+        if(cy < minY) {
+            cy = (int) minY;
+        } else if(cy > maxY) {
+            cy = (int) maxY;
+        }
 
         return new Vector3D(cx, cy, cDir);
     }

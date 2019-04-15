@@ -45,7 +45,8 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        BoidAlgorithm algorithm = new BoidAlgorithm(main.newArea, main.probes);
+        Algorithm algorithm = new Algorithm(main.newArea, main.probes);
+        BoidAlgorithm boidAlgorithm = new BoidAlgorithm(main.newArea, main.probes);
         JFrame frame = new JFrame();
         frame.getContentPane().add(algorithm);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -18,7 +18,6 @@ import java.util.stream.IntStream;
 public class BoidAlgorithm extends JPanel {
     private Polygon2D area;
     private List<Probe> probes;
-    private List<Probe> nextProbes = new LinkedList<>();
     private Map<Integer, Double> fitnessScores = new HashMap<>();
     private boolean[][] adjMatrix;
     private double minX, minY, maxX, maxY;
@@ -102,16 +101,16 @@ public class BoidAlgorithm extends JPanel {
 
     public void bindPosition(Probe probe) {
         if(probe.getX() < this.minX) {
-            probe.setVelocity(probe.getVelocity().plus(new Vector2D(10, 0)));
+            probe.setVelocity(probe.getVelocity().plus(new Vector2D(20, 0)));
         }
         else if(probe.getX() > this.maxX) {
-            probe.setVelocity(probe.getVelocity().minus(new Vector2D(10, 0)));
+            probe.setVelocity(probe.getVelocity().minus(new Vector2D(20, 0)));
         }
         if(probe.getY() < this.minY) {
-            probe.setVelocity(probe.getVelocity().plus(new Vector2D(0, 10)));
+            probe.setVelocity(probe.getVelocity().plus(new Vector2D(0, 20)));
         }
         else if(probe.getY() > this.maxY) {
-            probe.setVelocity(probe.getVelocity().minus(new Vector2D(0, 10)));
+            probe.setVelocity(probe.getVelocity().minus(new Vector2D(0, 20)));
         }
     }
 
