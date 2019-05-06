@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class Main {
     private Random random = new Random();
-    private Area area = new Area(100, 600, 10);
+    private Area area = new Area(100, 600, 5);
     private Polygon2D newArea = buildArea();
     private int probeSize = 30;
     private double areaOfPolygon = newArea.area();
@@ -48,10 +48,10 @@ public class Main {
         Algorithm algorithm = new Algorithm(main.newArea, main.probes);
         BoidAlgorithm boidAlgorithm = new BoidAlgorithm(main.newArea, main.probes);
         JFrame frame = new JFrame();
-        frame.getContentPane().add(algorithm);
+        frame.getContentPane().add(boidAlgorithm);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
         frame.setVisible(true);
-        algorithm.findSolution();
+        boidAlgorithm.findSolution();
     }
 }

@@ -22,11 +22,13 @@ public class BoidAlgorithm extends JPanel {
     private boolean[][] adjMatrix;
     private double minX, minY, maxX, maxY;
     private Point2D center;
+    private int minProbes;
 
     BoidAlgorithm (Polygon2D area, List<Probe> probes) {
         this.area = area;
         this.probes = probes;
         this.adjMatrix = new boolean[probes.size()][probes.size()];
+        minProbes = (int) Math.round((0.9 * this.area.area()) / this.probes.get(0).getPolygon().area());
         this.minX = this.area.vertices().stream().mapToDouble(Point2D::x).min().getAsDouble();
         this.minY = this.area.vertices().stream().mapToDouble(Point2D::y).min().getAsDouble();
         this.maxX = this.area.vertices().stream().mapToDouble(Point2D::x).max().getAsDouble();
@@ -132,7 +134,7 @@ public class BoidAlgorithm extends JPanel {
             for (Probe probe : this.probes) {
                 probe.flock(this.probes);
                 bindPosition(probe);
-                //tendToPlace(probe);
+                tendToPlace(probe);
                 probe.update();
             }
             calculateFitness(this.probes);
@@ -150,7 +152,30 @@ public class BoidAlgorithm extends JPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if(i - bestIteration > 30 && i - reduceIteration > 40) {
+                reducePopulation();
+                reduceIteration = i;
+            }
             System.out.println(i);
+        }
+    }
+
+    private void reducePopulation() {
+        if(this.probes.size() <= minProbes) {
+            return;
+        }
+        int toDie = 3;
+        List<Integer> forDie = new LinkedList<>();
+        for(Probe probe: this.probes) {
+            if(!area.contains(new Point2D(probe.getX(), probe.getY()))) {
+                forDie.add(this.probes.indexOf(probe));
+                toDie -= 1;
+                if(toDie == 0)
+                    break;
+            }
+        }
+        for(Integer index: forDie) {
+            this.probes.remove(probes.get(index));
         }
     }
 }

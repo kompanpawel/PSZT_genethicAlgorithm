@@ -148,6 +148,7 @@ public class Probe {
         this.setY(this.position.y());
         setVelocity(this.velocity.plus(this.acceleration));
         this.acceleration = new Vector2D();
+        this.direction = random.nextInt(3);
     }
 
     Polygon2D getPolygon() {

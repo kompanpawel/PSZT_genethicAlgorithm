@@ -96,15 +96,20 @@ public class Algorithm extends JPanel{
                 List<Probe> neighbours = getListNeighboutProbes(this.probes.indexOf(probe));
                 int number;
                 Probe bestNeighbour;
+                if(neighbours.size() == 0) {
                     number = random.nextInt(this.probes.size());
                     bestNeighbour = this.probes.get(number);
+                } else {
+//                    number = random.nextInt(neighbours.size());
+                    bestNeighbour = neighbours.get(getBestNeighbour(neighbours));
+                }
                 Vector3D newProbeCoords = crossoverParents(probe, bestNeighbour);
                 Probe child = new Probe(newProbeCoords.getX(), newProbeCoords.getY(), 30, (int) newProbeCoords.getZ());
                 this.nextProbes.add(child);
             }
             calculateFitness(this.nextProbes);
             double totalFitnessScore = this.fitnessScores.entrySet().stream().mapToDouble(Map.Entry::getValue).sum();
-            //if(totalFitnessScore > bestFitnessScore) {
+//            if(totalFitnessScore > bestFitnessScore) {
                 bestFitnessScore = totalFitnessScore;
                 bestIteration = i;
                 this.probes = this.nextProbes;
@@ -112,7 +117,7 @@ public class Algorithm extends JPanel{
                 this.adjMatrix = new boolean[this.probes.size()][this.probes.size()];
                 generateAdjacencyMatrix();
                 System.out.println("zmiana");
-            //}
+//            }
             if(bestFitnessScore >= 0.9 * maxFitnessScore) {
                 System.out.println("pokrywa");
             }
@@ -146,7 +151,7 @@ public class Algorithm extends JPanel{
         }
     }
 
-    private int bestNeighbour(List<Probe> neighbours) {
+    private int getBestNeighbour(List<Probe> neighbours) {
         double best = 0;
         int bestIndex = 0;
         for(int i=0; i<neighbours.size();i++) {
@@ -191,17 +196,25 @@ public class Algorithm extends JPanel{
         int cy = Integer.parseInt(parseIntToString(CY), 2);
         int cDir = Integer.parseInt(parseIntToString(CDIR), 2);
 
-        if(cx < minX) {
-            cx = (int) minX;
-        } else if(cx > maxX) {
-            cx = (int) maxX;
-        }
-
-        if(cy < minY) {
-            cy = (int) minY;
-        } else if(cy > maxY) {
-            cy = (int) maxY;
-        }
+//        if(cx < minX) {
+//            cx = (int) minX;
+//            cx += 100;
+//            cx = random.nextInt((int) maxX - (int) minX);
+//        } else if(cx > maxX) {
+//            cx = (int) maxX;
+//            cx -= 100;
+//            cx = random.nextInt((int) maxX - (int) minX);
+//        }
+//
+//        if(cy < minY) {
+//            cy = (int) minY;
+//            cy += 100;
+//            cy = random.nextInt((int) maxY - (int) minY);
+//        } else if(cy > maxY) {
+//            cy = (int) maxY;
+//            cy -= 100;
+//            cy = random.nextInt((int) maxY - (int) minY);
+//        }
 
         return new Vector3D(cx, cy, cDir);
     }
@@ -211,7 +224,7 @@ public class Algorithm extends JPanel{
         Polygon2D union = Polygons2D.intersection(this.area, probe.getPolygon());
         double score = union.area();
         if(union.area() == 0) {
-            return score;
+            return 0;
         }
         for(int i = 1; i < neighbours.size(); i++) {
             difference = Polygons2D.difference(difference, neighbours.get(i).getPolygon());
